@@ -76,7 +76,8 @@ export const supabaseApi: SurveyApi = {
 
   signOut: () =>
     guard(async () => {
-      const { error } = await sb().auth.signOut()
+      // 'local' signs out this browser only, not the projector or other devices.
+      const { error } = await sb().auth.signOut({ scope: 'local' })
       if (error) throw error
     }),
 

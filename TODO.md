@@ -27,7 +27,7 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 
 # Phase 2 — Supabase Project and Database
 
-- [ ] Create a Supabase project. (manual: see docs/SUPABASE_SETUP.md)
+- [x] Create a Supabase project.
 - [x] Create the `surveys` table.
 - [x] Create the `questions` table.
 - [x] Create the `choices` table.
@@ -38,17 +38,17 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 - [x] Add timestamps.
 - [x] Add survey-status validation.
 - [x] Create Row Level Security policies.
-- [ ] Verify students cannot read survey results. (passes locally via `npm run test:db`; re-run `supabase/verify/01_security_checks.sql` on Supabase)
-- [ ] Verify anonymous students can read active surveys. (passes locally via `npm run test:db`; re-run `supabase/verify/01_security_checks.sql` on Supabase)
-- [ ] Verify anonymous students can submit responses. (passes locally via `npm run test:db`; re-run `supabase/verify/01_security_checks.sql` on Supabase)
-- [ ] Verify authenticated instructors have full access. (passes locally via `npm run test:db`; re-run `supabase/verify/01_security_checks.sql` on Supabase)
+- [x] Verify students cannot read survey results.
+- [x] Verify anonymous students can read active surveys.
+- [x] Verify anonymous students can submit responses.
+- [x] Verify authenticated instructors have full access.
 
 ---
 
 # Phase 3 — Instructor Authentication
 
 - [x] Create the instructor login page.
-- [ ] Connect login to Supabase Auth. (code written; verified in database phase)
+- [x] Connect login to Supabase Auth.
 - [x] Add logout.
 - [x] Create an authentication context/provider.
 - [x] Create a protected-route component.
@@ -60,7 +60,7 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 # Phase 4 — Instructor Dashboard
 
 - [x] Create the dashboard layout.
-- [ ] Load surveys from Supabase. (code written; verified in database phase)
+- [x] Load surveys from Supabase.
 - [x] Display survey title, status, and creation date.
 - [x] Add status badges for Draft, Active, Closed, and Archived.
 - [x] Add a New Survey button.
@@ -203,26 +203,26 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 
 # Phase 14 — Testing
 
-- [ ] Test instructor login.
-- [ ] Test survey creation.
-- [ ] Test survey editing.
-- [ ] Test activation.
-- [ ] Test closing surveys.
-- [ ] Test QR-code links.
-- [ ] Test student submissions.
-- [ ] Test duplicate-submission prevention.
-- [ ] Test results calculations.
-- [ ] Test CSV export.
-- [ ] Test mobile layout.
+- [x] Test instructor login.
+- [x] Test survey creation.
+- [x] Test survey editing.
+- [x] Test activation.
+- [x] Test closing surveys.
+- [x] Test QR-code links.
+- [x] Test student submissions.
+- [x] Test duplicate-submission prevention.
+- [x] Test results calculations.
+- [x] Test CSV export.
+- [x] Test mobile layout.
 - [ ] Test with at least two browsers.
-- [ ] Test unauthorized access attempts.
-- [ ] Test database Row Level Security.
+- [x] Test unauthorized access attempts.
+- [x] Test database Row Level Security.
 
 ---
 
 # Phase 15 — Deployment
 
-- [ ] Push the project to GitHub.
+- [x] Push the project to GitHub.
 - [ ] Create the Cloudflare Pages site.
 - [ ] Connect Cloudflare Pages to the GitHub repository.
 - [ ] Configure production environment variables. (`.env.example` documents them)

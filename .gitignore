@@ -12,3 +12,6 @@ coverage
 # Supabase CLI local state
 supabase/.temp
 supabase/.branches
+
+# End-to-end test output
+e2e/screenshots

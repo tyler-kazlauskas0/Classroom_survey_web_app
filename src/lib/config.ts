@@ -8,7 +8,21 @@
  */
 const env = import.meta.env
 
-export const SUPABASE_URL = ((env.VITE_SUPABASE_URL as string | undefined) ?? '').trim()
+/**
+ * Accept either the Project URL (https://<ref>.supabase.co) or the Data API
+ * URL shown in the dashboard (https://<ref>.supabase.co/rest/v1/); supabase-js
+ * needs the bare project URL and appends /rest/v1 and /auth/v1 itself.
+ */
+export function normaliseSupabaseUrl(raw: string): string {
+  return raw
+    .trim()
+    .replace(/\/+$/, '')
+    .replace(/\/(rest|auth)\/v1$/, '')
+}
+
+export const SUPABASE_URL = normaliseSupabaseUrl(
+  (env.VITE_SUPABASE_URL as string | undefined) ?? '',
+)
 export const SUPABASE_ANON_KEY = ((env.VITE_SUPABASE_ANON_KEY as string | undefined) ?? '').trim()
 
 export const isSupabaseConfigured = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY)

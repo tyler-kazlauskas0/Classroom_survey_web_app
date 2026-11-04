@@ -23,6 +23,13 @@ describe('config', () => {
     }
   })
 
+  it('normalises the Data API URL to the project URL', async () => {
+    const c = await load({})
+    expect(c.normaliseSupabaseUrl('https://x.supabase.co/rest/v1/')).toBe('https://x.supabase.co')
+    expect(c.normaliseSupabaseUrl(' https://x.supabase.co/ ')).toBe('https://x.supabase.co')
+    expect(c.normaliseSupabaseUrl('https://x.supabase.co/auth/v1')).toBe('https://x.supabase.co')
+  })
+
   it('refuses service-role and secret keys', async () => {
     for (const key of [jwt('service_role'), 'sb_secret_abc123']) {
       const c = await load({

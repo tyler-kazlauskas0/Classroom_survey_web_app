@@ -70,7 +70,7 @@ The policies give full access to any logged-in user, so **only you** may have an
 ## 5. Connect the app
 
 1. **Project Settings → API Keys** (or **Settings → API** in older dashboards) and copy:
-   - the **Project URL** (`https://<ref>.supabase.co`, also shown under *Data API*);
+   - the **Project URL** (`https://<ref>.supabase.co`); the *Data API* URL ending in `/rest/v1/` also works;
    - the **anon** key (*Legacy API keys* tab) **or** the **publishable** key
      (`sb_publishable_…`). Do **not** copy `service_role` or `sb_secret_…` keys.
 2. In the project folder:
