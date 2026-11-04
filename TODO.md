@@ -6,19 +6,22 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 
 ---
 
+> Frontend items are checked when the UI is built and verified in demo mode.
+> Items that need the real database (RPCs, RLS, persistence) are completed in the database phase.
+
 # Phase 1 — Project Setup
 
-- [ ] Create a new React + TypeScript project with Vite.
-- [ ] Add Tailwind CSS.
-- [ ] Add React Router.
-- [ ] Add Supabase JavaScript client.
-- [ ] Add Recharts.
-- [ ] Add QR code generation package.
-- [ ] Create the initial project folder structure.
-- [ ] Add `.env.example` with Supabase environment variable names.
-- [ ] Configure ESLint and formatting.
-- [ ] Create a basic home page.
-- [ ] Verify the project builds successfully.
+- [x] Create a new React + TypeScript project with Vite.
+- [x] Add Tailwind CSS.
+- [x] Add React Router.
+- [x] Add Supabase JavaScript client.
+- [x] Add Recharts.
+- [x] Add QR code generation package.
+- [x] Create the initial project folder structure.
+- [x] Add `.env.example` with Supabase environment variable names.
+- [x] Configure ESLint and formatting.
+- [x] Create a basic home page.
+- [x] Verify the project builds successfully.
 
 ---
 
@@ -44,52 +47,52 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 
 # Phase 3 — Instructor Authentication
 
-- [ ] Create the instructor login page.
-- [ ] Connect login to Supabase Auth.
-- [ ] Add logout.
-- [ ] Create an authentication context/provider.
-- [ ] Create a protected-route component.
-- [ ] Redirect unauthenticated users to login.
-- [ ] Show the logged-in instructor in the dashboard.
+- [x] Create the instructor login page.
+- [ ] Connect login to Supabase Auth. (code written; verified in database phase)
+- [x] Add logout.
+- [x] Create an authentication context/provider.
+- [x] Create a protected-route component.
+- [x] Redirect unauthenticated users to login.
+- [x] Show the logged-in instructor in the dashboard.
 
 ---
 
 # Phase 4 — Instructor Dashboard
 
-- [ ] Create the dashboard layout.
-- [ ] Load surveys from Supabase.
-- [ ] Display survey title, status, and creation date.
-- [ ] Add status badges for Draft, Active, Closed, and Archived.
-- [ ] Add a New Survey button.
-- [ ] Add Edit action.
-- [ ] Add Duplicate action.
-- [ ] Add Delete action.
-- [ ] Add Archive action.
-- [ ] Add View Results action.
-- [ ] Add Activate action.
-- [ ] Add Close action.
-- [ ] Add search by survey title.
-- [ ] Add filtering by status.
+- [x] Create the dashboard layout.
+- [ ] Load surveys from Supabase. (code written; verified in database phase)
+- [x] Display survey title, status, and creation date.
+- [x] Add status badges for Draft, Active, Closed, and Archived.
+- [x] Add a New Survey button.
+- [x] Add Edit action.
+- [x] Add Duplicate action.
+- [x] Add Delete action.
+- [x] Add Archive action.
+- [x] Add View Results action.
+- [x] Add Activate action.
+- [x] Add Close action.
+- [x] Add search by survey title.
+- [x] Add filtering by status.
 
 ---
 
 # Phase 5 — Survey Editor
 
-- [ ] Create a survey editor page.
-- [ ] Add survey title field.
-- [ ] Add optional description field.
-- [ ] Add questions dynamically.
-- [ ] Support Multiple Choice questions.
-- [ ] Support True / False questions.
-- [ ] Add answer choices dynamically.
-- [ ] Reorder questions.
-- [ ] Reorder choices.
-- [ ] Delete questions.
-- [ ] Delete choices.
-- [ ] Validate required fields.
-- [ ] Save a survey as Draft.
-- [ ] Load an existing survey for editing.
-- [ ] Prevent editing an active survey unless it is first closed.
+- [x] Create a survey editor page.
+- [x] Add survey title field.
+- [x] Add optional description field.
+- [x] Add questions dynamically.
+- [x] Support Multiple Choice questions.
+- [x] Support True / False questions.
+- [x] Add answer choices dynamically.
+- [x] Reorder questions.
+- [x] Reorder choices.
+- [x] Delete questions.
+- [x] Delete choices.
+- [x] Validate required fields.
+- [x] Save a survey as Draft.
+- [x] Load an existing survey for editing.
+- [x] Prevent editing an active survey unless it is first closed.
 
 ---
 
@@ -99,76 +102,76 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 - [ ] Ensure at most one survey is Active.
 - [ ] Automatically close the previously active survey.
 - [ ] Generate a public survey slug or identifier.
-- [ ] Generate the public survey URL.
-- [ ] Generate a QR code from the public URL.
-- [ ] Create a Present Survey page.
-- [ ] Display survey title and QR code.
-- [ ] Display a readable fallback URL.
-- [ ] Add a Close Survey button.
-- [ ] Add a Download QR Code button.
+- [x] Generate the public survey URL.
+- [x] Generate a QR code from the public URL.
+- [x] Create a Present Survey page.
+- [x] Display survey title and QR code.
+- [x] Display a readable fallback URL.
+- [x] Add a Close Survey button.
+- [x] Add a Download QR Code button.
 
 ---
 
 # Phase 7 — Student Survey Page
 
-- [ ] Create the public route `/s/:surveyId`.
-- [ ] Load the requested active survey.
-- [ ] Show an error if the survey does not exist.
-- [ ] Show a message if the survey is closed.
-- [ ] Render survey title and description.
-- [ ] Render Multiple Choice questions.
-- [ ] Render True / False questions.
-- [ ] Validate required answers.
-- [ ] Add Submit button.
+- [x] Create the public route `/s/:slug`.
+- [x] Load the requested active survey.
+- [x] Show an error if the survey does not exist.
+- [x] Show a message if the survey is closed.
+- [x] Render survey title and description.
+- [x] Render Multiple Choice questions.
+- [x] Render True / False questions.
+- [x] Validate required answers.
+- [x] Add Submit button.
 - [ ] Store response and answers in Supabase.
-- [ ] Show a submission confirmation page.
-- [ ] Make the entire experience mobile friendly.
+- [x] Show a submission confirmation page.
+- [x] Make the entire experience mobile friendly.
 
 ---
 
 # Phase 8 — Duplicate Submission Protection
 
-- [ ] Generate an anonymous browser token.
-- [ ] Store the token in local storage.
-- [ ] Save the token with each response.
+- [x] Generate an anonymous browser token.
+- [x] Store the token in local storage.
+- [x] Save the token with each response.
 - [ ] Prevent the same token from submitting twice to the same survey.
-- [ ] Show a friendly message if a duplicate submission is attempted.
+- [x] Show a friendly message if a duplicate submission is attempted.
 - [ ] Add a database uniqueness constraint if appropriate.
 
 ---
 
 # Phase 9 — Results Dashboard
 
-- [ ] Create a results page for each survey.
-- [ ] Show total response count.
+- [x] Create a results page for each survey.
+- [x] Show total response count.
 - [ ] Aggregate answers by question.
-- [ ] Show counts for each choice.
-- [ ] Show percentages for each choice.
-- [ ] Add bar charts using Recharts.
-- [ ] Clearly label unanswered questions.
-- [ ] Add Refresh Results button.
-- [ ] Add link back to the main dashboard.
+- [x] Show counts for each choice.
+- [x] Show percentages for each choice.
+- [x] Add bar charts using Recharts.
+- [x] Clearly label unanswered questions.
+- [x] Add Refresh Results button.
+- [x] Add link back to the main dashboard.
 
 ---
 
 # Phase 10 — Historical Results
 
-- [ ] Allow viewing results for Closed surveys.
-- [ ] Allow viewing results for Archived surveys.
-- [ ] Add filtering by date.
-- [ ] Add filtering by survey title.
+- [x] Allow viewing results for Closed surveys.
+- [x] Allow viewing results for Archived surveys.
+- [x] Add filtering by date.
+- [x] Add filtering by survey title.
 - [ ] Preserve all historical response data.
 
 ---
 
 # Phase 11 — CSV Export
 
-- [ ] Add Export CSV button.
+- [x] Add Export CSV button.
 - [ ] Export survey metadata.
-- [ ] Export one row per response.
-- [ ] Include submission timestamp.
-- [ ] Include each question and answer.
-- [ ] Create safe CSV escaping.
+- [x] Export one row per response.
+- [x] Include submission timestamp.
+- [x] Include each question and answer.
+- [x] Create safe CSV escaping.
 - [ ] Test export with spreadsheet applications.
 
 ---
@@ -179,22 +182,22 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 - [ ] Duplicate questions.
 - [ ] Duplicate answer choices.
 - [ ] Create the copy in Draft state.
-- [ ] Add "Copy of ..." naming.
-- [ ] Redirect to the editor after duplication.
+- [x] Add "Copy of ..." naming.
+- [x] Redirect to the editor after duplication.
 
 ---
 
 # Phase 13 — UI Polish
 
-- [ ] Add consistent page layouts.
-- [ ] Improve mobile responsiveness.
-- [ ] Add loading states.
-- [ ] Add empty states.
-- [ ] Add error messages.
-- [ ] Add confirmation dialogs for destructive actions.
-- [ ] Improve QR-code presentation for classroom projection.
+- [x] Add consistent page layouts.
+- [x] Improve mobile responsiveness.
+- [x] Add loading states.
+- [x] Add empty states.
+- [x] Add error messages.
+- [x] Add confirmation dialogs for destructive actions.
+- [x] Improve QR-code presentation for classroom projection.
 - [ ] Test accessibility and keyboard navigation.
-- [ ] Improve color contrast.
+- [x] Improve color contrast.
 
 ---
 
@@ -224,7 +227,7 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 - [ ] Connect Cloudflare Pages to the GitHub repository.
 - [ ] Configure production environment variables.
 - [ ] Deploy the application.
-- [ ] Configure SPA routing.
+- [x] Configure SPA routing.
 - [ ] Verify production login.
 - [ ] Verify QR codes point to the production URL.
 - [ ] Test student submissions in production.

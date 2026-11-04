@@ -95,7 +95,7 @@ Items marked ⚠️ have security or data-integrity consequences.
    multiple-choice needs ≥2 non-empty choices.
 5. **Lifecycle transitions.** Not specified. **Decision:**
    - `draft → active` (activate), `active → closed` (close), `closed → active` (re-open, keeps slug and responses),
-   - `draft | closed → archived`, `archived → closed` (unarchive),
+   - `draft | closed → archived`; unarchive returns to `closed`, or to `draft` if it was never activated,
    - archived surveys cannot be activated directly; active surveys cannot be archived or deleted without closing first.
 6. **Slug format.** **Decision:** 8 random chars from an unambiguous alphabet
    (`23456789abcdefghjkmnpqrstuvwxyz`), generated in SQL with `gen_random_bytes`,
