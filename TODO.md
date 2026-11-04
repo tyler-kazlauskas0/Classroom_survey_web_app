@@ -27,28 +27,28 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 
 # Phase 2 — Supabase Project and Database
 
-- [ ] Create a Supabase project.
-- [ ] Create the `surveys` table.
-- [ ] Create the `questions` table.
-- [ ] Create the `choices` table.
-- [ ] Create the `responses` table.
-- [ ] Create the `answers` table.
-- [ ] Add foreign-key constraints.
-- [ ] Add database indexes.
-- [ ] Add timestamps.
-- [ ] Add survey-status validation.
-- [ ] Create Row Level Security policies.
-- [ ] Verify students cannot read survey results.
-- [ ] Verify anonymous students can read active surveys.
-- [ ] Verify anonymous students can submit responses.
-- [ ] Verify authenticated instructors have full access.
+- [x] Create a Supabase project.
+- [x] Create the `surveys` table.
+- [x] Create the `questions` table.
+- [x] Create the `choices` table.
+- [x] Create the `responses` table.
+- [x] Create the `answers` table.
+- [x] Add foreign-key constraints.
+- [x] Add database indexes.
+- [x] Add timestamps.
+- [x] Add survey-status validation.
+- [x] Create Row Level Security policies.
+- [x] Verify students cannot read survey results.
+- [x] Verify anonymous students can read active surveys.
+- [x] Verify anonymous students can submit responses.
+- [x] Verify authenticated instructors have full access.
 
 ---
 
 # Phase 3 — Instructor Authentication
 
 - [x] Create the instructor login page.
-- [ ] Connect login to Supabase Auth. (code written; verified in database phase)
+- [x] Connect login to Supabase Auth.
 - [x] Add logout.
 - [x] Create an authentication context/provider.
 - [x] Create a protected-route component.
@@ -60,7 +60,7 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 # Phase 4 — Instructor Dashboard
 
 - [x] Create the dashboard layout.
-- [ ] Load surveys from Supabase. (code written; verified in database phase)
+- [x] Load surveys from Supabase.
 - [x] Display survey title, status, and creation date.
 - [x] Add status badges for Draft, Active, Closed, and Archived.
 - [x] Add a New Survey button.
@@ -98,10 +98,10 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 
 # Phase 6 — Survey Activation
 
-- [ ] Add activation logic.
-- [ ] Ensure at most one survey is Active.
-- [ ] Automatically close the previously active survey.
-- [ ] Generate a public survey slug or identifier.
+- [x] Add activation logic.
+- [x] Ensure at most one survey is Active.
+- [x] Automatically close the previously active survey.
+- [x] Generate a public survey slug or identifier.
 - [x] Generate the public survey URL.
 - [x] Generate a QR code from the public URL.
 - [x] Create a Present Survey page.
@@ -123,7 +123,7 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 - [x] Render True / False questions.
 - [x] Validate required answers.
 - [x] Add Submit button.
-- [ ] Store response and answers in Supabase.
+- [x] Store response and answers in Supabase.
 - [x] Show a submission confirmation page.
 - [x] Make the entire experience mobile friendly.
 
@@ -134,9 +134,9 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 - [x] Generate an anonymous browser token.
 - [x] Store the token in local storage.
 - [x] Save the token with each response.
-- [ ] Prevent the same token from submitting twice to the same survey.
+- [x] Prevent the same token from submitting twice to the same survey.
 - [x] Show a friendly message if a duplicate submission is attempted.
-- [ ] Add a database uniqueness constraint if appropriate.
+- [x] Add a database uniqueness constraint if appropriate.
 
 ---
 
@@ -144,7 +144,7 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 
 - [x] Create a results page for each survey.
 - [x] Show total response count.
-- [ ] Aggregate answers by question.
+- [x] Aggregate answers by question.
 - [x] Show counts for each choice.
 - [x] Show percentages for each choice.
 - [x] Add bar charts using Recharts.
@@ -160,7 +160,7 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 - [x] Allow viewing results for Archived surveys.
 - [x] Add filtering by date.
 - [x] Add filtering by survey title.
-- [ ] Preserve all historical response data.
+- [x] Preserve all historical response data.
 
 ---
 
@@ -178,10 +178,10 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 
 # Phase 12 — Survey Duplication
 
-- [ ] Duplicate survey title and description.
-- [ ] Duplicate questions.
-- [ ] Duplicate answer choices.
-- [ ] Create the copy in Draft state.
+- [x] Duplicate survey title and description.
+- [x] Duplicate questions.
+- [x] Duplicate answer choices.
+- [x] Create the copy in Draft state.
 - [x] Add "Copy of ..." naming.
 - [x] Redirect to the editor after duplication.
 
@@ -203,29 +203,29 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 
 # Phase 14 — Testing
 
-- [ ] Test instructor login.
-- [ ] Test survey creation.
-- [ ] Test survey editing.
-- [ ] Test activation.
-- [ ] Test closing surveys.
-- [ ] Test QR-code links.
-- [ ] Test student submissions.
-- [ ] Test duplicate-submission prevention.
-- [ ] Test results calculations.
-- [ ] Test CSV export.
-- [ ] Test mobile layout.
+- [x] Test instructor login.
+- [x] Test survey creation.
+- [x] Test survey editing.
+- [x] Test activation.
+- [x] Test closing surveys.
+- [x] Test QR-code links.
+- [x] Test student submissions.
+- [x] Test duplicate-submission prevention.
+- [x] Test results calculations.
+- [x] Test CSV export.
+- [x] Test mobile layout.
 - [ ] Test with at least two browsers.
-- [ ] Test unauthorized access attempts.
-- [ ] Test database Row Level Security.
+- [x] Test unauthorized access attempts.
+- [x] Test database Row Level Security.
 
 ---
 
 # Phase 15 — Deployment
 
-- [ ] Push the project to GitHub.
+- [x] Push the project to GitHub.
 - [ ] Create the Cloudflare Pages site.
 - [ ] Connect Cloudflare Pages to the GitHub repository.
-- [ ] Configure production environment variables.
+- [ ] Configure production environment variables. (`.env.example` documents them)
 - [ ] Deploy the application.
 - [x] Configure SPA routing.
 - [ ] Verify production login.

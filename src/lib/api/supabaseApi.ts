@@ -76,7 +76,8 @@ export const supabaseApi: SurveyApi = {
 
   signOut: () =>
     guard(async () => {
-      const { error } = await sb().auth.signOut()
+      // 'local' signs out this browser only, not the projector or other devices.
+      const { error } = await sb().auth.signOut({ scope: 'local' })
       if (error) throw error
     }),
 
@@ -129,7 +130,8 @@ export const supabaseApi: SurveyApi = {
 
   deleteSurvey: (id) =>
     guard(async () => {
-      unwrap(await sb().from('surveys').delete().eq('id', id).neq('status', 'active'))
+      // The database refuses to delete an active survey (INVALID_TRANSITION).
+      unwrap(await sb().from('surveys').delete().eq('id', id))
     }),
 
   archiveSurvey: (id) =>
