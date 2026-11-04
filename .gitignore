@@ -15,3 +15,6 @@ supabase/.branches
 
 # End-to-end test output
 e2e/screenshots
+
+# Wrangler local state (wrangler dev)
+.wrangler
