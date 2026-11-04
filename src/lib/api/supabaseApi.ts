@@ -14,6 +14,7 @@ import type {
   SubmitResult,
   Survey,
   SurveyResults,
+  SurveyStatus,
   SurveySummary,
   SurveyWithQuestions,
 } from '../types'
@@ -163,6 +164,15 @@ export const supabaseApi: SurveyApi = {
         .eq('survey_id', id)
       if (error) throw error
       return count ?? 0
+    }),
+
+  getSurveyStatus: (id) =>
+    guard(async () => {
+      const row = unwrap(
+        await sb().from('surveys').select('status').eq('id', id).maybeSingle(),
+      ) as { status: SurveyStatus } | null
+      if (!row) throw new AppError('SURVEY_NOT_FOUND')
+      return row.status
     }),
 
   getResults: (id) =>

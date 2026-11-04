@@ -12,7 +12,9 @@
     "test": "vitest run",
     "test:db": "bash scripts/test-db.sh",
     "test:integration": "INTEGRATION=1 vitest run --reporter=verbose src/lib/__tests__/supabase.integration.test.ts",
-    "test:e2e": "node e2e/workflow.mjs"
+    "test:e2e": "node e2e/workflow.mjs",
+    "test:phase5": "node e2e/phase5.mjs",
+    "dev:lan": "vite --host"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.119.0",
@@ -35,7 +37,9 @@
     "eslint-plugin-react-refresh": "^0.4.26",
     "globals": "^17.14.0",
     "jsdom": "^26.1.0",
+    "jsqr": "^1.4.0",
     "playwright": "^1.63.0",
+    "pngjs": "^7.0.0",
     "prettier": "^3.9.10",
     "tailwindcss": "^4.3.4",
     "typescript": "^5.9.3",

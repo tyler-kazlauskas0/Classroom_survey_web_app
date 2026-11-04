@@ -196,7 +196,7 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 - [x] Add error messages.
 - [x] Add confirmation dialogs for destructive actions.
 - [x] Improve QR-code presentation for classroom projection.
-- [ ] Test accessibility and keyboard navigation.
+- [x] Test accessibility and keyboard navigation. (keyboard-only submission, labels, 44px targets; full screen-reader audit pending)
 - [x] Improve color contrast.
 
 ---
@@ -214,7 +214,7 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 - [x] Test results calculations.
 - [x] Test CSV export.
 - [x] Test mobile layout.
-- [ ] Test with at least two browsers.
+- [ ] Test with at least two browsers. (Chromium automated; Safari/real phone: manual checklist in docs/PHASE5_TESTING.md)
 - [x] Test unauthorized access attempts.
 - [x] Test database Row Level Security.
 

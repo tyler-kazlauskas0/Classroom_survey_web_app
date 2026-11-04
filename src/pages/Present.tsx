@@ -21,10 +21,13 @@ export default function Present() {
   const [confirmClose, setConfirmClose] = useState(false)
   const [busy, setBusy] = useState(false)
   const [actionError, setActionError] = useState<string | null>(null)
+  const [connectionLost, setConnectionLost] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
 
   const url = survey?.public_slug ? publicSurveyUrl(survey.public_slug) : null
   const isActive = survey?.status === 'active'
+  // Phones cannot open "localhost": that address means the phone itself.
+  const localOnly = url ? /^https?:\/\/(localhost|127\.|\[::1\]|0\.0\.0\.0)/.test(url) : false
 
   useEffect(() => {
     if (!url) return
@@ -33,22 +36,34 @@ export default function Present() {
       .catch(() => setQr(null))
   }, [url])
 
+  // Poll the response count and the survey's status. If the survey is closed
+  // or replaced elsewhere (another tab, the dashboard), reload so the projector
+  // stops showing a QR code that no longer works.
+  const status = survey?.status
   useEffect(() => {
-    if (!survey) return
+    if (!status) return
     let stopped = false
-    const tick = () =>
-      api
-        .getResponseCount(id)
-        .then((n) => !stopped && setCount(n))
-        .catch(() => {})
+    const tick = async () => {
+      try {
+        const [n, current] = await Promise.all([
+          api.getResponseCount(id),
+          status === 'active' ? api.getSurveyStatus(id) : Promise.resolve(status),
+        ])
+        if (stopped) return
+        setCount(n)
+        setConnectionLost(false)
+        if (current !== status) void reload()
+      } catch {
+        if (!stopped) setConnectionLost(true)
+      }
+    }
     void tick()
-    if (!isActive) return
-    const timer = setInterval(tick, POLL_MS)
+    const timer = status === 'active' ? setInterval(tick, POLL_MS) : undefined
     return () => {
       stopped = true
       clearInterval(timer)
     }
-  }, [id, survey, isActive])
+  }, [id, status, reload])
 
   async function closeSurvey() {
     setBusy(true)
@@ -125,6 +140,17 @@ export default function Present() {
             >
               {url.replace(/^https?:\/\//, '')}
             </a>
+            {localOnly && (
+              <p
+                role="alert"
+                className="mt-4 max-w-2xl rounded-lg border border-amber-400 bg-amber-50 px-4 py-3 text-left text-sm text-amber-950"
+              >
+                <strong>Phones can't open this link.</strong> It points to <code>localhost</code>,
+                which on a phone means the phone itself. Open this page using your computer's
+                network address (run <code>npm run dev:lan</code>), or set{' '}
+                <code>VITE_PUBLIC_SITE_URL</code> to your deployed site.
+              </p>
+            )}
           </>
         ) : (
           <div className="mt-6 space-y-4">
@@ -149,6 +175,11 @@ export default function Present() {
         <p className="mt-6 text-2xl font-semibold text-slate-900 sm:text-4xl" aria-live="polite">
           Responses: <span className="tabular-nums">{count ?? '–'}</span>
         </p>
+        {connectionLost && (
+          <p role="status" className="mt-2 text-sm font-medium text-amber-800">
+            Connection lost. Reconnecting… (the count may be out of date)
+          </p>
+        )}
         {actionError && (
           <div className="mt-4">
             <ErrorMessage message={actionError} />

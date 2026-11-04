@@ -15,6 +15,7 @@ import { api } from '../lib/api'
 import { friendlyMessage } from '../lib/errors'
 import type { QuestionType, SurveyDraft, SurveyWithQuestions } from '../lib/types'
 import { MAX_CHOICES, normaliseDraft, validateDraft, type DraftErrors } from '../lib/validation'
+import { randomId } from '../lib/id'
 
 interface EditorChoice {
   key: string
@@ -32,7 +33,7 @@ interface EditorState {
   questions: EditorQuestion[]
 }
 
-const key = () => crypto.randomUUID()
+const key = () => randomId()
 const blankChoices = (): EditorChoice[] => [
   { key: key(), choice_text: '' },
   { key: key(), choice_text: '' },
@@ -446,7 +447,7 @@ function ChoiceList({
           const name = `Choice ${ci + 1} of question ${qi + 1}`
           return (
             <li key={c.key}>
-              <div className="flex items-center gap-1">
+              <div className="flex flex-wrap items-center gap-1">
                 <span aria-hidden="true" className="w-6 text-sm text-slate-500">
                   {String.fromCharCode(65 + ci)}.
                 </span>
@@ -461,33 +462,38 @@ function ChoiceList({
                   }
                   aria-invalid={!!err}
                   aria-describedby={err ? `err-q${qi}-c${ci}` : undefined}
-                  className={inputClass}
+                  className={`${inputClass} min-w-0 flex-1`}
                   maxLength={300}
                 />
-                <Button
-                  variant="ghost"
-                  onClick={() => setChoices((cs) => move(cs, ci, ci - 1))}
-                  disabled={ci === 0}
-                  aria-label={`Move ${name} up`}
-                >
-                  ↑
-                </Button>
-                <Button
-                  variant="ghost"
-                  onClick={() => setChoices((cs) => move(cs, ci, ci + 1))}
-                  disabled={ci === q.choices.length - 1}
-                  aria-label={`Move ${name} down`}
-                >
-                  ↓
-                </Button>
-                <Button
-                  variant="ghost"
-                  onClick={() => setChoices((cs) => cs.filter((_, i) => i !== ci))}
-                  aria-label={`Delete ${name}`}
-                  className="text-red-800"
-                >
-                  ✕
-                </Button>
+                {/* On phones the controls wrap under the input so it keeps its width. */}
+                <div className="flex w-full justify-end gap-1 sm:w-auto">
+                  <Button
+                    variant="ghost"
+                    className="w-11 px-0"
+                    onClick={() => setChoices((cs) => move(cs, ci, ci - 1))}
+                    disabled={ci === 0}
+                    aria-label={`Move ${name} up`}
+                  >
+                    ↑
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="w-11 px-0"
+                    onClick={() => setChoices((cs) => move(cs, ci, ci + 1))}
+                    disabled={ci === q.choices.length - 1}
+                    aria-label={`Move ${name} down`}
+                  >
+                    ↓
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    onClick={() => setChoices((cs) => cs.filter((_, i) => i !== ci))}
+                    aria-label={`Delete ${name}`}
+                    className="w-11 px-0 text-red-800"
+                  >
+                    ✕
+                  </Button>
+                </div>
               </div>
               <div className="pl-7">
                 <FieldError id={`err-q${qi}-c${ci}`} message={err} />
