@@ -5,12 +5,12 @@ students answer from their phones with no login required. Results show counts,
 percentages and charts, and can be exported as CSV.
 
 **Stack:** React 19 + TypeScript + Vite, Tailwind CSS v4, React Router, Supabase
-(PostgreSQL + Auth), Recharts, `qrcode`. Hosted on Cloudflare Pages.
+(PostgreSQL + Auth), Recharts, `qrcode`. Hosted on Cloudflare (Workers static assets).
 
 Specifications: [SPEC.md](SPEC.md), [docs/API.md](docs/API.md),
 [docs/DATABASE.md](docs/DATABASE.md), [docs/UI.md](docs/UI.md), [TODO.md](TODO.md).
 Design decisions: [docs/PHASE1_REVIEW.md](docs/PHASE1_REVIEW.md).
-Supabase setup: [docs/SUPABASE_SETUP.md](docs/SUPABASE_SETUP.md). Workflow test results: [docs/PHASE4_TESTING.md](docs/PHASE4_TESTING.md). Test & debug report: [docs/PHASE5_TESTING.md](docs/PHASE5_TESTING.md).
+Supabase setup: [docs/SUPABASE_SETUP.md](docs/SUPABASE_SETUP.md). Workflow test results: [docs/PHASE4_TESTING.md](docs/PHASE4_TESTING.md). Test & debug report: [docs/PHASE5_TESTING.md](docs/PHASE5_TESTING.md). Deployment: [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
 ## Run locally
 
@@ -87,7 +87,7 @@ src/
     csv.ts      CSV generation (RFC 4180, formula-injection safe, Excel BOM)
     results.ts  Results aggregation
     validation.ts, errors.ts, token.ts, config.ts, ...
-public/_redirects   SPA routing for Cloudflare Pages
+wrangler.jsonc      Cloudflare Workers deploy config (SPA routing)
 supabase/
   migrations/       Schema, RLS policies, database functions (run in order)
   verify/           Security checks and data-inspection queries for the SQL Editor
