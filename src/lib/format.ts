@@ -19,3 +19,10 @@ export function formatDateTime(iso: string): string {
 export function plural(n: number, one: string, many = `${one}s`): string {
   return `${n} ${n === 1 ? one : many}`
 }
+
+/** Local calendar date (YYYY-MM-DD) of a timestamp, matching <input type="date"> values. */
+export function localDateKey(iso: string): string {
+  const d = new Date(iso)
+  const pad = (n: number) => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
+}

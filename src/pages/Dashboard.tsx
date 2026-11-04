@@ -14,7 +14,7 @@ import {
 import { api } from '../lib/api'
 import { useAuth } from '../lib/auth'
 import { friendlyMessage } from '../lib/errors'
-import { formatDate, plural } from '../lib/format'
+import { formatDate, localDateKey, plural } from '../lib/format'
 import type { SurveyStatus, SurveySummary } from '../lib/types'
 import { useAsync } from '../lib/useAsync'
 
@@ -101,7 +101,7 @@ export default function Dashboard() {
       if (q && !s.title.toLowerCase().includes(q)) return false
       if (status === 'current' && s.status === 'archived') return false
       if (status !== 'all' && status !== 'current' && s.status !== status) return false
-      const day = s.created_at.slice(0, 10)
+      const day = localDateKey(s.created_at)
       if (from && day < from) return false
       if (to && day > to) return false
       return true

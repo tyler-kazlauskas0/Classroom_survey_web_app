@@ -4,6 +4,7 @@
  * (survey_id, anonymous_token). Provides protection against accidental
  * resubmission, not against a determined user.
  */
+import { randomId } from './id'
 const TOKEN_KEY = 'cs.anonymous_token'
 const SUBMITTED_KEY = 'cs.submitted_surveys'
 
@@ -27,7 +28,7 @@ let memoryToken: string | null = null
 export function getAnonymousToken(): string {
   const existing = safeGet(TOKEN_KEY)
   if (existing) return existing
-  memoryToken ??= crypto.randomUUID()
+  memoryToken ??= randomId()
   safeSet(TOKEN_KEY, memoryToken)
   return memoryToken
 }

@@ -7,6 +7,7 @@ import type {
   Survey,
   SurveyDraft,
   SurveyResults,
+  SurveyStatus,
   SurveySummary,
   SurveyWithQuestions,
 } from '../types'
@@ -37,6 +38,8 @@ export interface SurveyApi {
   activateSurvey(id: string): Promise<Survey>
   closeSurvey(id: string): Promise<void>
   getResponseCount(id: string): Promise<number>
+  /** Lightweight status check used by the presentation page's polling. */
+  getSurveyStatus(id: string): Promise<SurveyStatus>
   getResults(id: string): Promise<SurveyResults>
   getExportData(id: string): Promise<ExportData>
 

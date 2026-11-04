@@ -18,6 +18,7 @@ import type {
   SurveyStatus,
 } from '../types'
 import type { SurveyApi } from './types'
+import { randomId } from '../id'
 
 export const DEMO_EMAIL = 'instructor@example.com'
 export const DEMO_PASSWORD = 'demo1234'
@@ -36,7 +37,7 @@ interface DemoDb {
   answers: Row<{ id: string; response_id: string; question_id: string; choice_id: string | null }>
 }
 
-const uuid = () => crypto.randomUUID()
+const uuid = () => randomId()
 const now = () => new Date().toISOString()
 const delay = (ms = 120) =>
   import.meta.env.MODE === 'test' ? Promise.resolve() : new Promise((r) => setTimeout(r, ms))
@@ -386,6 +387,11 @@ export const demoApi: SurveyApi = {
   async getResponseCount(id) {
     requireAuth()
     return Object.values(load().responses).filter((r) => r.survey_id === id).length
+  },
+
+  async getSurveyStatus(id) {
+    requireAuth()
+    return requireSurvey(load(), id).status
   },
 
   async getResults(id) {

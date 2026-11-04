@@ -140,3 +140,27 @@ describe('errors', () => {
     expect(toAppError(new AppError('SURVEY_NOT_FOUND')).code).toBe('SURVEY_NOT_FOUND')
   })
 })
+
+describe('localDateKey', () => {
+  it('uses the local calendar day, not the UTC day', async () => {
+    const { localDateKey } = await import('../format')
+    expect(localDateKey(new Date(2026, 0, 1, 23, 30).toISOString())).toBe('2026-01-01')
+    expect(localDateKey(new Date(2026, 0, 2, 0, 15).toISOString())).toBe('2026-01-02')
+  })
+})
+
+describe('randomId', () => {
+  it('returns a v4 UUID even when crypto.randomUUID is unavailable (plain-HTTP pages)', async () => {
+    const { randomId } = await import('../id')
+    const original = crypto.randomUUID
+    Object.defineProperty(crypto, 'randomUUID', { value: undefined, configurable: true })
+    try {
+      const ids = new Set(Array.from({ length: 1000 }, randomId))
+      expect(ids.size).toBe(1000)
+      for (const id of ids)
+        expect(id).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/)
+    } finally {
+      Object.defineProperty(crypto, 'randomUUID', { value: original, configurable: true })
+    }
+  })
+})

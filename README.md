@@ -10,7 +10,7 @@ percentages and charts, and can be exported as CSV.
 Specifications: [SPEC.md](SPEC.md), [docs/API.md](docs/API.md),
 [docs/DATABASE.md](docs/DATABASE.md), [docs/UI.md](docs/UI.md), [TODO.md](TODO.md).
 Design decisions: [docs/PHASE1_REVIEW.md](docs/PHASE1_REVIEW.md).
-Supabase setup: [docs/SUPABASE_SETUP.md](docs/SUPABASE_SETUP.md). Workflow test results: [docs/PHASE4_TESTING.md](docs/PHASE4_TESTING.md).
+Supabase setup: [docs/SUPABASE_SETUP.md](docs/SUPABASE_SETUP.md). Workflow test results: [docs/PHASE4_TESTING.md](docs/PHASE4_TESTING.md). Test & debug report: [docs/PHASE5_TESTING.md](docs/PHASE5_TESTING.md).
 
 ## Run locally
 
@@ -52,6 +52,7 @@ key in `.env`.
 | Command | Purpose |
 |---|---|
 | `npm run dev` | Dev server |
+| `npm run dev:lan` | Dev server on your network address, so phones on the same Wi-Fi can scan the QR code |
 | `npm run build` | Type-check and production build to `dist/` |
 | `npm run preview` | Serve the production build |
 | `npm run lint` | ESLint |
@@ -59,6 +60,7 @@ key in `.env`.
 | `npm test` | Vitest unit tests (CSV, results maths, validation, error mapping, config, demo backend rules) |
 | `npm run test:integration` | Phase 4 workflow against the live Supabase project via the app's data layer (needs `.env` + `E2E_INSTRUCTOR_*`) |
 | `npm run test:e2e` | Same workflow through the real UI in a browser, checking the database at every step |
+| `npm run test:phase5` | 26 test-and-debug scenarios (QR, submissions, persistence, errors, devices) against live Supabase |
 | `npm run test:db` | Apply migrations to a disposable local Postgres and run the security checks (`TEST_DATABASE_URL=...`) |
 
 ## Pages
