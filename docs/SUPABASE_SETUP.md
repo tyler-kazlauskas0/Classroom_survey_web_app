@@ -117,7 +117,7 @@ one at a time.
 
 ## 7. Production (deployment phase)
 
-In **Cloudflare Pages → Settings → Environment variables**, add
+In Cloudflare **Workers → Settings → Build → Variables and secrets** (build-time variables; see [DEPLOYMENT.md](DEPLOYMENT.md)), add
 `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` and `VITE_PUBLIC_SITE_URL`. A
 production build without them shows a *Configuration error* page instead of
 silently running in demo mode.

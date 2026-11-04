@@ -1,0 +1,14 @@
+// Cloudflare Workers static-assets deployment (Workers Builds runs `npx wrangler deploy`).
+// No secrets belong here: the VITE_* values are set as *build* variables in the
+// Cloudflare dashboard and baked into the bundle by `npm run build`.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "classroom-survey-web-app",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    "directory": "./dist",
+    // Serve index.html for client-side routes like /dashboard and /s/<slug>.
+    // (Replaces public/_redirects, which Workers rejects as an infinite loop.)
+    "not_found_handling": "single-page-application"
+  }
+}

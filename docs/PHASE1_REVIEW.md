@@ -124,7 +124,7 @@ Items marked ⚠️ have security or data-integrity consequences.
     `save_survey` RPC (safe because only drafts, which have no responses, are editable).
 14. **Public URL base for QR codes.** **Decision:** `VITE_PUBLIC_SITE_URL` env var with
     fallback to `window.location.origin`, so QR codes point at production when deployed.
-15. **SPA routing on Cloudflare Pages.** **Decision:** `public/_redirects` with `/* /index.html 200`.
+15. **SPA routing on Cloudflare.** **Decision:** `wrangler.jsonc` with `"not_found_handling": "single-page-application"` (Workers static assets). *(Originally `public/_redirects`; Workers rejects that rule as an infinite loop, so it was replaced.)*
 16. ⚠️ **SECURITY DEFINER hygiene.** **Decision:** every definer function sets
     `search_path = public`, `REVOKE EXECUTE ... FROM public`, then grants only to the
     intended role (`anon` or `authenticated`).
