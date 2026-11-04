@@ -57,6 +57,8 @@ export function toAppError(err: unknown): AppError {
     return new AppError('INVALID_CREDENTIALS', message)
   if (/failed to fetch|networkerror|network request failed|load failed/i.test(message))
     return new AppError('NETWORK_ERROR', message)
+  if (/invalid input syntax for type uuid/i.test(message))
+    return new AppError('SURVEY_NOT_FOUND', message)
   if (/jwt|not authenticated|permission denied/i.test(message))
     return new AppError('AUTH_REQUIRED', message)
   return new AppError('UNEXPECTED', message)

@@ -33,8 +33,18 @@ time, only drafts are editable, one response per browser. Because demo data live
 single browser, a student phone can't reach it; test student pages in another tab of the
 same browser. To reset the demo data, clear the site's local storage.
 
-The database schema, Row Level Security policies and RPC functions are added in the
-database phase (`supabase/migrations/`).
+### Connecting to Supabase
+
+Follow **[docs/SUPABASE_SETUP.md](docs/SUPABASE_SETUP.md)**. In short: create a project,
+run the three SQL files in `supabase/migrations/` in the SQL Editor, run
+`supabase/verify/01_security_checks.sql` (every row should say PASS), disable public
+sign-ups, create your instructor user, then put the Project URL and **anon/publishable**
+key in `.env`.
+
+> Only public values go in `.env`. Never commit `.env`, the database password, or a
+> `service_role` / `sb_secret_` key. The app refuses to start with a secret key, and a
+> production build without Supabase settings shows a configuration error instead of
+> running in demo mode.
 
 ## Scripts
 
@@ -45,7 +55,8 @@ database phase (`supabase/migrations/`).
 | `npm run preview` | Serve the production build |
 | `npm run lint` | ESLint |
 | `npm run format` | Prettier |
-| `npm test` | Vitest unit tests (CSV, results maths, validation, error mapping, demo backend rules) |
+| `npm test` | Vitest unit tests (CSV, results maths, validation, error mapping, config, demo backend rules) |
+| `npm run test:db` | Apply migrations to a disposable local Postgres and run the security checks (`TEST_DATABASE_URL=...`) |
 
 ## Pages
 
@@ -72,7 +83,12 @@ src/
     results.ts  Results aggregation
     validation.ts, errors.ts, token.ts, config.ts, ...
 public/_redirects   SPA routing for Cloudflare Pages
-supabase/           Database migrations (database phase)
+supabase/
+  migrations/       Schema, RLS policies, database functions (run in order)
+  verify/           Security checks and data-inspection queries for the SQL Editor
+  seed.sql          Optional sample survey
+  tests/            Local stand-in for Supabase roles (testing only)
+scripts/test-db.sh  Local database test runner
 docs/               Specifications, design review, screenshots
 ```
 

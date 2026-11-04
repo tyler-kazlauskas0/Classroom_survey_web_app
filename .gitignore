@@ -1,7 +1,14 @@
 node_modules
 dist
-.env
-.env.local
 *.log
 coverage
 .DS_Store
+
+# Environment files hold project-specific keys: never commit them.
+.env
+.env.*
+!.env.example
+
+# Supabase CLI local state
+supabase/.temp
+supabase/.branches
