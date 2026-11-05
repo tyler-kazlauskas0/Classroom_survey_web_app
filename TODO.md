@@ -247,6 +247,6 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 - [ ] Add numeric questions.
 - [ ] Add AI-assisted question generation.
 - [ ] Add LMS integration.
-- [ ] Add multiple instructors.
+- [x] Add multiple instructors. (self-service accounts; each sees only their own surveys)
 - [ ] Add course and semester organization.
 - [ ] Add analytics across multiple surveys.

@@ -1,11 +1,12 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { api } from './api'
-import type { InstructorSession } from './types'
+import type { InstructorSession, SignUpResult } from './types'
 
 interface AuthState {
   session: InstructorSession | null
   loading: boolean
   signIn(email: string, password: string): Promise<void>
+  signUp(email: string, password: string): Promise<SignUpResult>
   signOut(): Promise<void>
 }
 
@@ -35,6 +36,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       loading,
       async signIn(email, password) {
         setSession(await api.signIn(email, password))
+      },
+      async signUp(email, password) {
+        const result = await api.signUp(email, password)
+        if (result.status === 'signed_in') setSession(result.session)
+        return result
       },
       async signOut() {
         await api.signOut()

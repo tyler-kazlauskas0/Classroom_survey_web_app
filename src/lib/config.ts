@@ -30,6 +30,9 @@ export const isSupabaseConfigured = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY)
 /** Demo mode is for local development; production builds must opt in explicitly. */
 export const isDemoAllowed = !isSupabaseConfigured && (env.DEV || env.VITE_ENABLE_DEMO === 'true')
 
+/** Show "Create account" links. The Supabase setting "Allow new users to sign up" is what actually controls it. */
+export const isSignupEnabled = env.VITE_ENABLE_SIGNUP !== 'false'
+
 /** Decode a JWT payload without verifying it (only to read the `role` claim). */
 function jwtRole(key: string): string | null {
   const parts = key.split('.')

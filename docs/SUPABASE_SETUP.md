@@ -33,6 +33,10 @@ contents and click **Run**. Each one should finish with *Success. No rows return
 | 1 | [`supabase/migrations/20261104000001_schema.sql`](../supabase/migrations/20261104000001_schema.sql) | 5 tables, primary/foreign keys, indexes, the one-active-survey rule, triggers |
 | 2 | [`supabase/migrations/20261104000002_rls.sql`](../supabase/migrations/20261104000002_rls.sql) | Row Level Security policies and table privileges |
 | 3 | [`supabase/migrations/20261104000003_functions.sql`](../supabase/migrations/20261104000003_functions.sql) | Database functions (activate, close, submit, results, …) and who can call them |
+| 4 | [`supabase/migrations/20261105000004_instructor_accounts.sql`](../supabase/migrations/20261105000004_instructor_accounts.sql) | Instructor accounts: each survey has an owner, and each instructor sees only their own surveys and results; one active survey **per instructor** |
+
+> **Already ran 1–3 earlier?** Run only file 4. Existing surveys are given to the oldest
+> instructor account (you).
 
 *Alternative:* with the [Supabase CLI](https://supabase.com/docs/guides/cli), run
 `supabase link --project-ref <ref>` and then `supabase db push`.
@@ -42,30 +46,48 @@ Optional: run [`supabase/seed.sql`](../supabase/seed.sql) to add one sample Draf
 ## 3. Check the security rules
 
 Run [`supabase/verify/01_security_checks.sql`](../supabase/verify/01_security_checks.sql)
-in the SQL Editor. It acts as an anonymous student and as the instructor, then
-**rolls back** everything it did, so your data is untouched.
+in the SQL Editor. It acts as an anonymous student and as two different
+instructors, then **rolls back** everything it did, so your data is untouched.
 
-**Expected:** a table of 36 checks, **every row `PASS`**. Take a screenshot for your
+**Expected:** a table of 52 checks, **every row `PASS`**. Take a screenshot for your
 assignment. Among other things it proves that students:
 
 - can read only the Active survey;
 - can submit a response only through `submit_survey_response`, which rejects
   duplicates, invalid choices and missing answers;
 - **cannot** read responses or answers (results), **cannot** insert, update or delete
-  any table directly, and **cannot** call instructor functions.
+  any table directly, and **cannot** call instructor functions;
 
-## 4. Lock down authentication
+and that one instructor **cannot** see, change, delete, close or read the results of
+another instructor's surveys.
 
-The policies give full access to any logged-in user, so **only you** may have an account.
+## 4. Configure authentication (instructor accounts)
+
+Each instructor account sees only its own surveys and results (migration 004), so
+letting people create accounts does not expose anyone else's data. This is how a
+grader or colleague can try the instructor side **without you sharing a password or
+putting credentials in the repository**.
 
 1. **Authentication → Sign In / Providers** (called *Providers* in some dashboard versions):
    - make sure **Email** is enabled;
-   - turn **off** *Allow new users to sign up*;
+   - **Allow new users to sign up**: **on** to let others create accounts from the app's
+     *Create account* page, or **off** if only accounts you add yourself should exist;
+   - **Confirm email**: **off** for testing and grading, so accounts work immediately.
+     Supabase's built-in email service only sends to your project's team members and
+     is heavily rate-limited, so outside testers would never receive the link. Turn
+     it on only after configuring your own SMTP server (Authentication → Emails);
    - click **Save**.
-2. **Authentication → Users → Add user → Create new user**: enter your email and a
-   strong password, and tick **Auto Confirm User**.
+2. Your own account: create it in the app (**Create account**) or with **Authentication →
+   Users → Add user → Create new user** (tick **Auto Confirm User**).
 3. **Authentication → URL Configuration → Site URL:** `http://localhost:5173` for now.
    Change it to the production URL after deployment.
+
+To hide the *Create account* links in the app, set `VITE_ENABLE_SIGNUP=false` when building.
+The Supabase sign-up setting is what actually allows or blocks new accounts.
+
+**Trade-off of open sign-ups:** anyone with the link can create an account and their
+own surveys (using your free-tier quota), but they can't see or change yours.
+Turn sign-ups off again when you no longer need outside testers.
 
 ## 5. Connect the app
 
@@ -92,7 +114,7 @@ The policies give full access to any logged-in user, so **only you** may have an
    npm run dev
    ```
 
-The yellow *Demo mode* banner should be gone. Log in with the user from step 4.
+The yellow *Demo mode* banner should be gone. Log in with your account from step 4.
 
 Check that nothing secret is tracked by Git (this should print nothing):
 
@@ -128,15 +150,15 @@ silently running in demo mode.
 
 | | Student (`anon` role, not logged in) | Instructor (`authenticated` role) |
 |---|---|---|
-| `surveys`, `questions`, `choices` | `SELECT` only, and RLS limits rows to the **Active** survey | Full access |
-| `responses`, `answers` | **No privileges at all** | Full access |
+| `surveys`, `questions`, `choices` | `SELECT` only, and RLS limits rows to the **Active** survey | Full access to **their own** surveys only |
+| `responses`, `answers` | **No privileges at all** | Full access for **their own** surveys only |
 | `get_public_survey(slug)` | ✔ survey content only, never responses | ✔ |
 | `submit_survey_response(...)` | ✔ validated, atomic insert | ✔ |
 | `save_survey`, `activate_survey`, `close_survey`, `archive_survey`, `unarchive_survey`, `duplicate_survey`, `get_survey_results` | ✘ permission denied | ✔ |
 
 Rules the database enforces no matter who calls it:
 
-- At most one survey is Active (unique partial index, plus an activation lock).
+- Each instructor has at most one Active survey (unique partial index on the owner, plus a per-instructor activation lock).
 - Questions and choices can change only while their survey is a Draft (trigger), so
   collected results can't be altered.
 - An Active survey can't be deleted; deleting any other survey cascades to its

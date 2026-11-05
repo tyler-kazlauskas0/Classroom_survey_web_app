@@ -14,7 +14,8 @@
     "test:integration": "INTEGRATION=1 vitest run --reporter=verbose src/lib/__tests__/supabase.integration.test.ts",
     "test:e2e": "node e2e/workflow.mjs",
     "test:phase5": "node e2e/phase5.mjs",
-    "dev:lan": "vite --host"
+    "dev:lan": "vite --host",
+    "test:accounts": "node e2e/accounts.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.119.0",

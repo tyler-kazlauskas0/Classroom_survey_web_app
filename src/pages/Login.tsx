@@ -5,6 +5,7 @@ import { Button, Card, ErrorMessage, inputClass } from '../components/ui'
 import { api } from '../lib/api'
 import { DEMO_EMAIL, DEMO_PASSWORD } from '../lib/api/demoApi'
 import { useAuth } from '../lib/auth'
+import { isSignupEnabled } from '../lib/config'
 
 export default function Login() {
   const { session, signIn } = useAuth()
@@ -85,6 +86,14 @@ export default function Login() {
                 {busy ? 'Logging in...' : 'Log In'}
               </Button>
             </form>
+            {isSignupEnabled && (
+              <p className="mt-4 text-center text-sm text-slate-600">
+                New instructor?{' '}
+                <Link to="/signup" className="font-medium text-blue-800 hover:underline">
+                  Create an account
+                </Link>
+              </p>
+            )}
             {api.mode === 'demo' && (
               <p className="mt-4 rounded-lg bg-slate-100 p-3 text-sm text-slate-700">
                 Demo login: <code>{DEMO_EMAIL}</code> / <code>{DEMO_PASSWORD}</code>

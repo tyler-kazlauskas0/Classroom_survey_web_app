@@ -26,6 +26,11 @@ declare
     v_n        int;
     v_ok       boolean;
     v_err      text;
+    -- Two throw-away instructor identities (no real accounts are touched).
+    v_a        uuid := gen_random_uuid();
+    v_b        uuid := gen_random_uuid();
+    v_b_survey uuid;
+    v_rows     int;
     v_denied   text[] := array[
         ['read responses',                 'select count(*) from public.responses'],
         ['read answers',                   'select count(*) from public.answers'],
@@ -46,6 +51,7 @@ begin
 
         -- ============== Instructor (authenticated) =====================
         perform set_config('role', 'authenticated', true);
+        perform set_config('request.jwt.claims', json_build_object('sub', v_a, 'role', 'authenticated')::text, true);
 
         v_id := public.save_survey(null, '__verify__ Recursion', 'check', '[
             {"question_text":"What is required?","question_type":"multiple_choice",
@@ -71,7 +77,7 @@ begin
                         (v_json ->> 'status' = 'active' and v_slug ~ '^[2-9a-z]{8}$')::text, coalesce(v_slug, 'null')];
 
         select count(*) into v_n from public.surveys where status = 'active';
-        r := r || array['Only one survey is Active', (v_n = 1)::text, ''];
+        r := r || array['Instructor: only one of their surveys is Active', (v_n = 1)::text, ''];
 
         begin
             perform public.save_survey(v_id, 'x', null, '[]'::jsonb);
@@ -97,8 +103,9 @@ begin
 
         -- ============== Student (anon) =================================
         perform set_config('role', 'anon', true);
+        perform set_config('request.jwt.claims', '{"role":"anon"}', true);
 
-        select count(*) into v_n from public.surveys;
+        select count(*) into v_n from public.surveys where id in (v_id, v_draft);
         r := r || array['Student: can read only the Active survey (not drafts)', (v_n = 1)::text, v_n || ' visible'];
 
         select count(*) into v_n from public.questions where survey_id = v_draft;
@@ -155,8 +162,75 @@ begin
             end;
         end loop;
 
+        -- ============== Another instructor (B) ==========================
+        perform set_config('role', 'authenticated', true);
+        perform set_config('request.jwt.claims', json_build_object('sub', v_b, 'role', 'authenticated')::text, true);
+
+        select count(*) into v_n from public.surveys where id in (v_id, v_draft);
+        r := r || array['Other instructor: cannot see another instructor''s surveys', (v_n = 0)::text, v_n || ' visible'];
+
+        select count(*) into v_n from public.responses where survey_id = v_id;
+        r := r || array['Other instructor: cannot see another instructor''s responses', (v_n = 0)::text, ''];
+
+        select count(*) into v_n from public.questions where survey_id in (v_id, v_draft);
+        r := r || array['Other instructor: cannot see another instructor''s questions', (v_n = 0)::text, ''];
+
+        v_json := public.get_survey_results(v_id);
+        r := r || array['Other instructor: get_survey_results returns nothing', (v_json is null)::text, coalesce(v_json::text, 'null')];
+
+        update public.surveys set title = 'hijacked' where id in (v_id, v_draft);
+        get diagnostics v_rows = row_count;
+        r := r || array['Other instructor: cannot rename another instructor''s survey', (v_rows = 0)::text, v_rows || ' rows'];
+
+        delete from public.surveys where id in (v_id, v_draft);
+        get diagnostics v_rows = row_count;
+        r := r || array['Other instructor: cannot delete another instructor''s survey', (v_rows = 0)::text, v_rows || ' rows'];
+
+        foreach v_err in array array['save', 'activate', 'close', 'duplicate', 'archive'] loop
+            begin
+                case v_err
+                    when 'save' then perform public.save_survey(v_draft, 'x', null, '[]'::jsonb);
+                    when 'activate' then perform public.activate_survey(v_draft);
+                    when 'close' then perform public.close_survey(v_id);
+                    when 'duplicate' then perform public.duplicate_survey(v_id);
+                    else perform public.archive_survey(v_draft);
+                end case;
+                r := r || array['Other instructor: cannot ' || v_err || ' another instructor''s survey', 'false', 'call succeeded'];
+            exception when others then
+                r := r || array['Other instructor: cannot ' || v_err || ' another instructor''s survey',
+                                (sqlerrm = 'SURVEY_NOT_FOUND')::text, sqlerrm];
+            end;
+        end loop;
+
+        begin
+            insert into public.questions (survey_id, question_text, question_type, position)
+            values (v_draft, 'injected', 'true_false', 50);
+            r := r || array['Other instructor: cannot add questions to another instructor''s survey', 'false', 'insert succeeded'];
+        exception when others then
+            r := r || array['Other instructor: cannot add questions to another instructor''s survey', 'true', sqlerrm];
+        end;
+
+        begin
+            insert into public.surveys (title, owner_id) values ('impersonation', v_a);
+            r := r || array['Other instructor: cannot create a survey owned by someone else', 'false', 'insert succeeded'];
+        exception when others then
+            r := r || array['Other instructor: cannot create a survey owned by someone else', 'true', sqlerrm];
+        end;
+
+        -- B can run their own survey at the same time as A.
+        v_b_survey := public.save_survey(null, '__verify__ B survey', null,
+            '[{"question_text":"Q","question_type":"true_false"}]'::jsonb);
+        perform public.activate_survey(v_b_survey);
+        select owner_id = v_b into v_ok from public.surveys where id = v_b_survey;
+        r := r || array['Other instructor: new survey is owned by its creator', coalesce(v_ok, false)::text, ''];
+
+        perform set_config('role', 'none', true);
+        select count(*) into v_n from public.surveys where id in (v_id, v_b_survey) and status = 'active';
+        r := r || array['Each instructor can have their own Active survey at the same time', (v_n = 2)::text, v_n || ' active'];
+
         -- ============== Instructor again ================================
         perform set_config('role', 'authenticated', true);
+        perform set_config('request.jwt.claims', json_build_object('sub', v_a, 'role', 'authenticated')::text, true);
 
         v_json := public.get_survey_results(v_id);
         r := r || array['Instructor: results retrieved from the database',
@@ -169,8 +243,16 @@ begin
         where rr.survey_id = v_id;
         r := r || array['Instructor: can read responses and answers', (v_n = 2)::text, v_n || ' answers'];
 
+        begin
+            update public.surveys set owner_id = v_b where id = v_draft;
+            r := r || array['Instructor: cannot transfer a survey to someone else', 'false', 'update succeeded'];
+        exception when others then
+            r := r || array['Instructor: cannot transfer a survey to someone else', 'true', sqlerrm];
+        end;
+
         perform public.close_survey(v_id);
         perform set_config('role', 'anon', true);
+        perform set_config('request.jwt.claims', '{"role":"anon"}', true);
         begin
             perform public.submit_survey_response(v_id, 'verify-token-3', jsonb_build_array(
                 jsonb_build_object('question_id', v_q1, 'choice_id', v_c1),
@@ -181,10 +263,11 @@ begin
         end;
         v_json := public.get_public_survey(v_slug);
         r := r || array['Student: closed survey reports closed', (v_json ->> 'status' = 'closed')::text, ''];
-        select count(*) into v_n from public.surveys;
+        select count(*) into v_n from public.surveys where id = v_id;
         r := r || array['Student: closed survey is no longer readable', (v_n = 0)::text, ''];
 
         perform set_config('role', 'authenticated', true);
+        perform set_config('request.jwt.claims', json_build_object('sub', v_a, 'role', 'authenticated')::text, true);
         v_id := public.duplicate_survey(v_id);
         select count(*) into v_n from public.questions where survey_id = v_id;
         r := r || array['Instructor: duplicate copies questions as a Draft',

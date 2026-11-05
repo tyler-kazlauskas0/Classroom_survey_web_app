@@ -1,6 +1,8 @@
+import { Link } from 'react-router-dom'
 import { DemoBanner } from '../components/DemoBanner'
 import { ButtonLink } from '../components/ui'
 import { useAuth } from '../lib/auth'
+import { isSignupEnabled } from '../lib/config'
 
 export default function Landing() {
   const { session } = useAuth()
@@ -21,6 +23,14 @@ export default function Landing() {
           >
             {session ? 'Go to Dashboard' : 'Instructor Login'}
           </ButtonLink>
+          {!session && isSignupEnabled && (
+            <p className="mt-4 text-slate-600">
+              New here?{' '}
+              <Link to="/signup" className="font-medium text-blue-800 hover:underline">
+                Create an instructor account
+              </Link>
+            </p>
+          )}
         </div>
       </main>
     </div>

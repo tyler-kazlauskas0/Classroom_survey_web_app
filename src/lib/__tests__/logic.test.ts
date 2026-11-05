@@ -164,3 +164,26 @@ describe('randomId', () => {
     }
   })
 })
+
+describe('sign-up errors', () => {
+  it('maps Supabase Auth error codes to friendly messages', () => {
+    expect(
+      toAppError({ code: 'signup_disabled', message: 'Signups not allowed for this instance' })
+        .code,
+    ).toBe('SIGNUP_DISABLED')
+    expect(
+      toAppError({ code: 'user_already_exists', message: 'User already registered' }).code,
+    ).toBe('EMAIL_IN_USE')
+    expect(
+      toAppError({ code: 'weak_password', message: 'Password should be at least 6 characters.' })
+        .code,
+    ).toBe('WEAK_PASSWORD')
+    expect(
+      toAppError({ code: 'over_email_send_rate_limit', message: 'email rate limit exceeded' }).code,
+    ).toBe('RATE_LIMITED')
+    expect(toAppError({ message: 'Signups not allowed for this instance' }).code).toBe(
+      'SIGNUP_DISABLED',
+    )
+    expect(friendlyMessage({ code: 'email_exists', message: 'x' })).toMatch(/already exists/)
+  })
+})

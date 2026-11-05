@@ -106,3 +106,9 @@ export interface ExportData {
 export interface InstructorSession {
   email: string
 }
+
+/** Outcome of creating an instructor account. */
+export type SignUpResult =
+  | { status: 'signed_in'; session: InstructorSession }
+  /** Supabase "Confirm email" is on: the user must click the emailed link first. */
+  | { status: 'confirmation_required' }
