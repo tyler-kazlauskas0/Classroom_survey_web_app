@@ -25,6 +25,16 @@ export const DEMO_PASSWORD = 'demo1234'
 
 const DB_KEY = 'cs.demo.db'
 const SESSION_KEY = 'cs.demo.session'
+const ACCOUNTS_KEY = 'cs.demo.accounts'
+
+/** Demo-only accounts created with "Create account" (kept in this browser). */
+function demoAccounts(): Record<string, string> {
+  try {
+    return JSON.parse(localStorage.getItem(ACCOUNTS_KEY) ?? '{}') as Record<string, string>
+  } catch {
+    return {}
+  }
+}
 
 interface Row<T> {
   [id: string]: T
@@ -225,13 +235,31 @@ export const demoApi: SurveyApi = {
 
   async signIn(email, password) {
     await delay(300)
-    if (email.trim().toLowerCase() !== DEMO_EMAIL || password !== DEMO_PASSWORD)
-      throw new AppError('INVALID_CREDENTIALS')
-    const session = { email: DEMO_EMAIL }
+    const normalized = email.trim().toLowerCase()
+    const valid =
+      (normalized === DEMO_EMAIL && password === DEMO_PASSWORD) ||
+      demoAccounts()[normalized] === password
+    if (!valid) throw new AppError('INVALID_CREDENTIALS')
+    const session = { email: normalized }
     localStorage.setItem(SESSION_KEY, JSON.stringify(session))
     listeners.forEach((l) => l(session))
     return session
   },
+  async signUp(email, password) {
+    await delay(300)
+    const normalized = email.trim().toLowerCase()
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(normalized)) throw new AppError('INVALID_EMAIL')
+    if (password.length < 8) throw new AppError('WEAK_PASSWORD')
+    const accounts = demoAccounts()
+    if (normalized === DEMO_EMAIL || accounts[normalized]) throw new AppError('EMAIL_IN_USE')
+    accounts[normalized] = password // demo only: never store real passwords like this
+    localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(accounts))
+    const session = { email: normalized }
+    localStorage.setItem(SESSION_KEY, JSON.stringify(session))
+    listeners.forEach((l) => l(session))
+    return { status: 'signed_in' as const, session }
+  },
+
   async signOut() {
     localStorage.removeItem(SESSION_KEY)
     listeners.forEach((l) => l(null))

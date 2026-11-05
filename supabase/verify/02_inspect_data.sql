@@ -7,9 +7,10 @@
 -- =====================================================================
 
 -- 1. Creating a survey stores its information in the database.
-select id, title, status, public_slug, created_at, updated_at
-from surveys
-order by created_at desc;
+select s.id, s.title, s.status, s.public_slug, u.email as owner, s.created_at, s.updated_at
+from surveys s
+left join auth.users u on u.id = s.owner_id
+order by s.created_at desc;
 
 -- 2. Adding questions creates corresponding records (with their choices).
 select s.title as survey, q.position, q.question_type, q.question_text,

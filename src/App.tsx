@@ -12,6 +12,7 @@ import { Spinner } from './components/ui'
 // Instructor pages (and their heavy chart/QR libraries) load on demand,
 // keeping the student page small and fast on phones.
 const Login = lazy(() => import('./pages/Login'))
+const Signup = lazy(() => import('./pages/Signup'))
 const Dashboard = lazy(() => import('./pages/Dashboard'))
 const SurveyEditor = lazy(() => import('./pages/SurveyEditor'))
 const Present = lazy(() => import('./pages/Present'))
@@ -26,6 +27,7 @@ export default function App() {
             <Routes>
               <Route path="/" element={<Landing />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
               <Route path="/s/:slug" element={<StudentSurvey />} />
               <Route element={<ProtectedRoute />}>
                 {/* Present is full-screen, without the instructor header. */}

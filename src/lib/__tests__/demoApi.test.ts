@@ -100,3 +100,27 @@ describe('demo backend', () => {
     expect((await api.getPublicSurvey('nope')).status).toBe('not_found')
   })
 })
+
+describe('demo sign-up', () => {
+  it('creates an account that can log in, and rejects duplicates and weak passwords', async () => {
+    await api.signOut()
+    const r = await api.signUp('New.Teacher@School.edu', 'longenough1')
+    expect(r).toEqual({ status: 'signed_in', session: { email: 'new.teacher@school.edu' } })
+    await api.signOut()
+    await expect(api.signIn('new.teacher@school.edu', 'wrong-pass')).rejects.toMatchObject({
+      code: 'INVALID_CREDENTIALS',
+    })
+    expect(await api.signIn('new.teacher@school.edu', 'longenough1')).toEqual({
+      email: 'new.teacher@school.edu',
+    })
+    await expect(api.signUp('new.teacher@school.edu', 'longenough1')).rejects.toMatchObject({
+      code: 'EMAIL_IN_USE',
+    })
+    await expect(api.signUp('other@school.edu', 'short')).rejects.toMatchObject({
+      code: 'WEAK_PASSWORD',
+    })
+    await expect(api.signUp('not-an-email', 'longenough1')).rejects.toMatchObject({
+      code: 'INVALID_EMAIL',
+    })
+  })
+})

@@ -2,6 +2,7 @@ import type {
   ExportData,
   InstructorSession,
   PublicSurveyLookup,
+  SignUpResult,
   SubmitResult,
   SubmittedAnswer,
   Survey,
@@ -21,6 +22,8 @@ export interface SurveyApi {
 
   // Auth
   signIn(email: string, password: string): Promise<InstructorSession>
+  /** Create an instructor account. Each account sees only its own surveys. */
+  signUp(email: string, password: string): Promise<SignUpResult>
   signOut(): Promise<void>
   getSession(): Promise<InstructorSession | null>
   onAuthStateChange(cb: (session: InstructorSession | null) => void): () => void

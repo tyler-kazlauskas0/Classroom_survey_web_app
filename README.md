@@ -34,6 +34,14 @@ time, only drafts are editable, one response per browser. Because demo data live
 single browser, a student phone can't reach it; test student pages in another tab of the
 same browser. To reset the demo data, clear the site's local storage.
 
+### Instructor accounts
+
+Anyone you send the site to can click **Create account** and try the instructor side
+with their own login, so no credentials need to be shared or committed. Each instructor
+sees only their own surveys and results; Row Level Security enforces this in the
+database (migration `20261105000004_instructor_accounts.sql`). Supabase's *Allow new
+users to sign up* setting turns this on or off.
+
 ### Connecting to Supabase
 
 Follow **[docs/SUPABASE_SETUP.md](docs/SUPABASE_SETUP.md)**. In short: create a project,
@@ -61,6 +69,7 @@ key in `.env`.
 | `npm run test:integration` | Phase 4 workflow against the live Supabase project via the app's data layer (needs `.env` + `E2E_INSTRUCTOR_*`) |
 | `npm run test:e2e` | Same workflow through the real UI in a browser, checking the database at every step |
 | `npm run test:phase5` | 26 test-and-debug scenarios (QR, submissions, persistence, errors, devices) against live Supabase |
+| `npm run test:accounts` | Live test of instructor accounts: sign-up, data isolation between instructors |
 | `npm run test:db` | Apply migrations to a disposable local Postgres and run the security checks (`TEST_DATABASE_URL=...`) |
 
 ## Pages
@@ -69,6 +78,7 @@ key in `.env`.
 |---|---|---|
 | `/` | Landing | Public |
 | `/login` | Instructor login | Public |
+| `/signup` | Create an instructor account (each account sees only its own surveys) | Public |
 | `/dashboard` | Survey list: search, status and date filters, Edit / Activate / Close / Duplicate / Archive / Delete | Instructor |
 | `/surveys/new`, `/surveys/:id/edit` | Editor: Multiple Choice and True/False questions, reorder, validation (drafts only) | Instructor |
 | `/surveys/:id/present` | Projector view: large QR code, URL, live response count (5 s polling), PNG download, full screen, Close | Instructor |

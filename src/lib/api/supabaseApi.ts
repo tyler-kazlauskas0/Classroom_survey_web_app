@@ -10,6 +10,7 @@ import type {
   ExportData,
   InstructorSession,
   PublicSurveyLookup,
+  SignUpResult,
   Question,
   SubmitResult,
   Survey,
@@ -73,6 +74,22 @@ export const supabaseApi: SurveyApi = {
       const session = toSession(data.session)
       if (!session) throw new AppError('INVALID_CREDENTIALS')
       return session
+    }),
+
+  signUp: (email, password) =>
+    guard(async (): Promise<SignUpResult> => {
+      const { data, error } = await sb().auth.signUp({
+        email,
+        password,
+        options: { emailRedirectTo: `${window.location.origin}/login` },
+      })
+      if (error) throw error
+      const session = toSession(data.session)
+      if (session) return { status: 'signed_in', session }
+      // With "Confirm email" on, Supabase hides whether the address is taken by
+      // returning a user with no identities instead of an error.
+      if (data.user && data.user.identities?.length === 0) throw new AppError('EMAIL_IN_USE')
+      return { status: 'confirmation_required' }
     }),
 
   signOut: () =>
